@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A hilarious Urdu-English insult quiz app">
+    <meta name="theme-color" content="#4B0082">
+    <title>Bakwas Master Quiz</title>
+    
+    <!-- PWA Manifest & Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #ff69b4;
+            --secondary: #4b0082;
+            --background: #ffffff;
+            --text: #2c3e50;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #9400d3;
+            --secondary: #ff69b4;
+            --background: #2c3e50;
+            --text: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Baloo Bhai 2', cursive;
+            background: linear-gradient(135deg, #e0b0ff, #d8bfd8);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+            color: var(--secondary);
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 3px solid var(--primary);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--secondary);
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 0px white;
+        }
+
+        .question-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: var(--secondary);
+        }
+
+        .result {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #ffd700, #ff69b4);
+        }
+
+        .emoji {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+
+        .score {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤪 Bakwas Master Quiz 🤦‍♂️</h1>
+        <div class="score">Score: <span id="score">0</span></div>
+        <div id="quiz"></div>
+        <div id="result" class="result"></div>
+    </div>
+
+<script>
+const questions = [
+    {
+        question: "2+2 kya hota hai?",
+        options: ["4 (Char)", "5 (Paanch)", "8 (Aath)", "Tumhari himmat?"],
+        correct: 0
+    },
+    {
+        question: "Billi road cross kare to kya karna chahiye?",
+        options: ["Usse adopt karo", "Miaaoo bolna", "Apni qismat pe rona", "Signal change karne ko kaho"],
+        correct: 2
+    }
+];
+
+const insults = [
+    "Shabash! Aap ne fail hone mein bhi itni mehnat ki! 🎉",
+    "Aapka dimaag toh chutti pe lagta hai! 🏖️",
+    "Kya aapne school mein sirf khana khaya tha? 🍎"
+];
+
+const compliments = [
+    "Wah! Aap to Einstein ke bhi baap lagte ho! 🧠",
+    "Aapka dimaag computer se bhi tez hai! 💻"
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function buildQuiz() {
+    const quizElement = document.getElementById('quiz');
+    quizElement.innerHTML = `
+        <div class="question-box">
+            <div class="emoji">🤔</div>
+            <h2>${questions[currentQuestion].question}</h2>
+            <div class="options">
+                ${questions[currentQuestion].options.map((option, index) => `
+                    <button onclick="checkAnswer(${index})">${option}</button>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function checkAnswer(selectedIndex) {
+    const resultElement = document.getElementById('result');
+    
+    if(selectedIndex === questions[currentQuestion].correct) {
+        score += 10;
+        resultElement.innerHTML = `
+            ${compliments[Math.floor(Math.random() * compliments.length)]}
+            <div class="emoji">🎉</div>
+            <img src="/images/correct.gif" style="width: 200px;">
+        `;
+    } else {
+        resultElement.innerHTML = `
+            ${insults[Math.floor(Math.random() * insults.length)]}
+            <div class="emoji">💩</div>
+            <img src="/images/wrong.gif" style="width: 200px;">
+        `;
+    }
+
+    document.getElementById('score').textContent = score;
+    
+    currentQuestion++;
+    if(currentQuestion < questions.length) {
+        setTimeout(buildQuiz, 3000);
+    } else {
+        showFinalResult();
+    }
+}
+
+function showFinalResult() {
+    document.getElementById('quiz').innerHTML = `
+        <div class="result">
+            <h2>Final Score: ${score}</h2>
+            <img src="/images/${score > 50 ? 'trophy.png' : 'facepalm.png'}" style="width: 250px;">
+        </div>
+    `;
+}
+
+// Initialize quiz
+buildQuiz();
+</script>
+</body>
+  </html>
